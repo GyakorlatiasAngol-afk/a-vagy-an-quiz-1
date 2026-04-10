@@ -1,0 +1,154 @@
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.qc { max-width: 480px; margin: 0 auto; padding: 1rem 0.5rem 2rem; font-family: var(--font-sans); }
+.qhead { text-align: center; margin-bottom: 1.5rem; }
+.qtitle { font-size: 26px; font-weight: 500; color: #534AB7; margin-bottom: 4px; }
+.qsub { font-size: 14px; color: var(--color-text-secondary); }
+.prow { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+.ptrack { flex: 1; height: 8px; background: #EEEDFE; border-radius: 8px; overflow: hidden; }
+.pfill { height: 100%; background: #7F77DD; border-radius: 8px; transition: width 0.5s ease; }
+.plbl { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+.qcard { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 1.75rem 1.5rem; text-align: center; }
+.catpill { display: inline-block; font-size: 12px; font-weight: 500; padding: 3px 12px; border-radius: 20px; margin-bottom: 1rem; }
+.ebig { font-size: 68px; line-height: 1; display: block; margin-bottom: 0.75rem; }
+.instruction { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.wbig { font-size: 40px; font-weight: 500; color: #3C3489; margin-bottom: 4px; letter-spacing: -0.5px; }
+.hungarian { font-size: 14px; color: var(--color-text-secondary); font-style: italic; margin-bottom: 4px; }
+.phonetic { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 1.75rem; }
+.brow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1rem; }
+.abtn { padding: 20px 0; font-size: 28px; font-weight: 500; border-radius: 16px; border: 2px solid #CECBF6; background: #EEEDFE; color: #534AB7; cursor: pointer; transition: all 0.15s; }
+.abtn:hover:not(:disabled) { background: #CECBF6; border-color: #7F77DD; transform: translateY(-2px); }
+.abtn:active:not(:disabled) { transform: scale(0.96); }
+.abtn.correct { background: #EAF3DE; border-color: #639922; color: #27500A; }
+.abtn.wrong   { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; }
+.abtn.reveal  { background: #EAF3DE; border-color: #639922; color: #27500A; }
+.abtn:disabled { cursor: default; transform: none; }
+.fbwrap { min-height: 52px; border-radius: 12px; padding: 10px 14px; font-size: 14px; line-height: 1.6; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.fbwrap.good  { background: #EAF3DE; color: #27500A; }
+.fbwrap.bad   { background: #FCEBEB; color: #791F1F; }
+.fbwrap.empty { background: transparent; }
+.nxtbtn { display: block; width: 100%; margin-top: 14px; padding: 13px; border-radius: 12px; border: none; background: #534AB7; color: #EEEDFE; font-size: 15px; font-weight: 500; cursor: pointer; font-family: var(--font-sans); transition: background 0.15s; }
+.nxtbtn:hover { background: #3C3489; }
+.sstrip { display: flex; justify-content: center; gap: 16px; margin-top: 1.25rem; }
+.schip { background: var(--color-background-secondary); border-radius: 12px; padding: 8px 18px; text-align: center; }
+.schip .num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.schip .lbl { font-size: 11px; color: var(--color-text-secondary); }
+.rwrap { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 2.5rem 1.5rem; text-align: center; }
+.rtrophy { font-size: 72px; display: block; margin-bottom: 0.75rem; }
+.rpct { font-size: 52px; font-weight: 500; color: #534AB7; line-height: 1; margin-bottom: 4px; }
+.rstars { font-size: 28px; letter-spacing: 4px; display: block; margin-bottom: 0.75rem; }
+.rmsg { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+.rsub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+.rbtn { display: inline-block; padding: 13px 36px; background: #534AB7; color: #EEEDFE; border: none; border-radius: 12px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: var(--font-sans); }
+.rbtn:hover { background: #3C3489; }
+.rule-box { background: #EEEDFE; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; text-align: center; }
+.rule-box p { font-size: 13px; color: #534AB7; line-height: 1.7; }
+</style>
+
+<div class="qc">
+  <div class="qhead">
+    <div class="qtitle">🔤 A vagy AN?</div>
+    <div class="qsub">Válaszd ki a helyes angol névelőt!</div>
+  </div>
+  <div id="root"></div>
+</div>
+
+<script>
+const questions = [
+  { word:"apple",      hu:"alma",        answer:"an", emoji:"🍎", phonetic:"/ˈæpəl/",          hint:"Magánhangzó hanggal kezdődik: /æ/",                             cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"egg",        hu:"tojás",       answer:"an", emoji:"🥚", phonetic:"/ɛɡ/",             hint:"Magánhangzó hanggal kezdődik: /ɛ/",                             cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"umbrella",   hu:"esernyő",     answer:"an", emoji:"☂️", phonetic:"/ʌmˈbrɛlə/",      hint:"Magánhangzó hanggal kezdődik: /ʌ/",                             cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"orange",     hu:"narancs",     answer:"an", emoji:"🍊", phonetic:"/ˈɒrɪndʒ/",       hint:"Magánhangzó hanggal kezdődik: /ɒ/",                             cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"cat",        hu:"macska",      answer:"a",  emoji:"🐱", phonetic:"/kæt/",            hint:"Mássalhangzó hanggal kezdődik: /k/",                            cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"dog",        hu:"kutya",       answer:"a",  emoji:"🐶", phonetic:"/dɒɡ/",            hint:"Mássalhangzó hanggal kezdődik: /d/",                            cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"book",       hu:"könyv",       answer:"a",  emoji:"📖", phonetic:"/bʊk/",            hint:"Mássalhangzó hanggal kezdődik: /b/",                            cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"train",      hu:"vonat",       answer:"a",  emoji:"🚂", phonetic:"/treɪn/",          hint:"Mássalhangzó hanggal kezdődik: /t/",                            cat:"könnyű", catStyle:"background:#E1F5EE;color:#0F6E56" },
+  { word:"hour",       hu:"óra (idő)",   answer:"an", emoji:"⏰", phonetic:"/aʊər/",           hint:"A H néma! Úgy hangzik: 'aur' — magánhangzóval kezdődik",        cat:"trükkös", catStyle:"background:#FAECE7;color:#993C1D" },
+  { word:"university", hu:"egyetem",     answer:"a",  emoji:"🎓", phonetic:"/juːnɪˈvɜːsɪti/", hint:"Úgy hangzik: 'jú-niversity' — a /j/ mássalhangzó!",            cat:"trükkös", catStyle:"background:#FAECE7;color:#993C1D" },
+  { word:"island",     hu:"sziget",      answer:"an", emoji:"🏝️", phonetic:"/ˈaɪlənd/",       hint:"Az S néma! Úgy hangzik: 'ájland' — magánhangzóval kezdődik",   cat:"trükkös", catStyle:"background:#FAECE7;color:#993C1D" },
+  { word:"uniform",    hu:"egyenruha",   answer:"a",  emoji:"👔", phonetic:"/ˈjuːnɪfɔːm/",    hint:"Úgy hangzik: 'jú-niform' — a /j/ mássalhangzó!",              cat:"trükkös", catStyle:"background:#FAECE7;color:#993C1D" },
+  { word:"honest",     hu:"őszinte",     answer:"an", emoji:"🤝", phonetic:"/ˈɒnɪst/",        hint:"A H néma! Úgy hangzik: 'oniszt' — magánhangzóval kezdődik",    cat:"trükkös", catStyle:"background:#FAECE7;color:#993C1D" },
+];
+
+let cur = 0, score = 0, answered = false;
+
+function render(){
+  const root = document.getElementById('root');
+  if(cur >= questions.length){ showResult(root); return; }
+  const q = questions[cur]; answered = false;
+  const pct = Math.round((cur / questions.length) * 100);
+  const isFirst = cur === 0;
+  const ruleHTML = isFirst ? `
+    <div class="rule-box">
+      <p>💡 <strong>Az aranyszabály:</strong> Ne a betűt nézd — a <strong>hangot</strong> figyeld!<br>
+      🔵 <strong>AN</strong> + magánhangzó hang &nbsp;|&nbsp; 🔴 <strong>A</strong> + mássalhangzó hang</p>
+    </div>` : '';
+  root.innerHTML = `
+    ${ruleHTML}
+    <div class="prow">
+      <div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>
+      <span class="plbl">${cur+1} / ${questions.length}</span>
+    </div>
+    <div class="qcard">
+      <span class="catpill" style="${q.catStyle}">${q.cat === 'könnyű' ? '🟢 könnyű' : '🔥 trükkös'}</span>
+      <span class="ebig">${q.emoji}</span>
+      <div class="instruction">Melyik névelő illik elé?</div>
+      <div class="wbig">${q.word}</div>
+      <div class="hungarian">🇭🇺 ${q.hu}</div>
+      <div class="phonetic">${q.phonetic}</div>
+      <div class="brow">
+        <button class="abtn" id="btn-a" onclick="choose('a')">A</button>
+        <button class="abtn" id="btn-an" onclick="choose('an')">AN</button>
+      </div>
+      <div class="fbwrap empty" id="fb"></div>
+    </div>
+    <div class="sstrip">
+      <div class="schip"><div class="num">${score}</div><div class="lbl">✅ helyes</div></div>
+      <div class="schip"><div class="num">${cur - score}</div><div class="lbl">❌ hibás</div></div>
+    </div>`;
+}
+
+function choose(val){
+  if(answered) return;
+  answered = true;
+  const q = questions[cur];
+  const ok = val === q.answer;
+  if(ok) score++;
+  document.getElementById('btn-a').disabled = true;
+  document.getElementById('btn-an').disabled = true;
+  document.getElementById('btn-' + val).classList.add(ok ? 'correct' : 'wrong');
+  if(!ok) document.getElementById('btn-' + q.answer).classList.add('reveal');
+  const fb = document.getElementById('fb');
+  fb.className = 'fbwrap ' + (ok ? 'good' : 'bad');
+  fb.innerHTML = `<span style="font-size:18px">${ok ? '🎉' : '💡'}</span><span>${ok ? 'Helyes! ' : 'Majdnem! — '}${q.hint}</span>`;
+  const card = document.querySelector('.qcard');
+  const nb = document.createElement('button');
+  nb.className = 'nxtbtn';
+  nb.textContent = cur + 1 < questions.length ? 'Következő →' : 'Eredmény megtekintése 🏁';
+  nb.onclick = () => { cur++; render(); };
+  card.appendChild(nb);
+}
+
+function showResult(root){
+  const pct = Math.round((score / questions.length) * 100);
+  const d =
+    pct === 100 ? { t:"🏆", s:"⭐⭐⭐⭐⭐", m:"Tökéletes!", sub:"Hibátlan volt! Igazi névelő-bajnok vagy! 🎊" }
+    : pct >= 80  ? { t:"🥇", s:"⭐⭐⭐⭐",   m:"Szuper!",   sub:"Nagyon jól ment — csak pár csúszott ki!" }
+    : pct >= 60  ? { t:"🥈", s:"⭐⭐⭐",     m:"Jó munka!", sub:"Egyre jobb lesz — próbáld újra!" }
+    : pct >= 40  ? { t:"🥉", s:"⭐⭐",       m:"Haladás!",  sub:"Nézd át a trükkös szavakat, és próbáld újra!" }
+    :              { t:"📚", s:"⭐",         m:"Gyakorolj!", sub:"Ne add fel — minden próbával jobban megy!" };
+  root.innerHTML = `
+    <div class="rwrap">
+      <span class="rtrophy">${d.t}</span>
+      <div class="rpct">${pct}%</div>
+      <span class="rstars">${d.s}</span>
+      <div class="rmsg">${d.m}</div>
+      <div class="rsub">${score} helyes válasz ${questions.length}-ből<br>${d.sub}</div>
+      <button class="rbtn" onclick="restart()">🔄 Újra játszom</button>
+    </div>`;
+}
+
+function restart(){ cur = 0; score = 0; answered = false; render(); }
+
+render();
+</script>
